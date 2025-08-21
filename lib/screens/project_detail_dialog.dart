@@ -2,6 +2,7 @@ import 'package:cv/constants/all.dart';
 import 'package:cv/models/project.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class ProjectDetailDialog extends StatefulWidget {
   final Project project;
@@ -24,6 +25,7 @@ class _ProjectDetailDialogState extends State<ProjectDetailDialog>
   late Animation<double> _scaleAnimation;
   late Animation<double> _fadeAnimation;
   late Animation<Offset> _slideAnimation;
+  late ScrollController scrollController;
 
   PageController? _pageController;
   int _currentImageIndex = 0;
@@ -63,14 +65,12 @@ class _ProjectDetailDialogState extends State<ProjectDetailDialog>
     });
 
     // Initialize page controller for all images (cover + gallery)
-    final allImages = [
-      if (widget.project.coverImage != null) widget.project.coverImage!,
-      ...?(widget.project.gallery ?? []),
-    ];
+    final images = widget.project.gallery ?? [];
 
-    if (allImages.isNotEmpty) {
+    if (images.isNotEmpty) {
       _pageController = PageController();
     }
+    scrollController = ScrollController();
   }
 
   @override
@@ -88,15 +88,17 @@ class _ProjectDetailDialogState extends State<ProjectDetailDialog>
   }
 
   void _launchUrl(String url) {
-    // In a real app, you would use url_launcher package
-    // For now, we'll just show a snackbar
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('Would open: $url'),
-        backgroundColor:
-            widget.isDark ? AppConstants.darkCard : AppConstants.lightCard,
-      ),
-    );
+    try {
+      launchUrl(Uri.parse(url));
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Failed to launch URL: $e'),
+          backgroundColor:
+              widget.isDark ? AppConstants.darkCard : AppConstants.lightCard,
+        ),
+      );
+    }
   }
 
   @override
@@ -320,17 +322,61 @@ class _ProjectDetailDialogState extends State<ProjectDetailDialog>
               },
               itemCount: images.length,
               itemBuilder: (context, index) {
-                return Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  mainAxisSize: MainAxisSize.min,
+                return Stack(
                   children: [
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(16),
-
-                      child: Image.asset(
-                        images[index],
-                        fit: BoxFit.contain, // oran korunuyor
+                    Positioned(
+                      right: 0,
+                      child: IconButton(
+                        onPressed: () {
+                          showDialog(
+                            context: context,
+                            builder: (context) {
+                              return Dialog(child: Image.asset(images[index]));
+                            },
+                          );
+                        },
+                        icon: Icon(Icons.zoom_out_map),
                       ),
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Expanded(
+                          child: Center(
+                            child: IconButton(
+                              onPressed: () {
+                                _pageController?.previousPage(
+                                  duration: Duration(milliseconds: 300),
+                                  curve: Curves.easeInOut,
+                                );
+                              },
+                              icon: Icon(Icons.arrow_back),
+                            ),
+                          ),
+                        ),
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(16),
+
+                          child: Image.asset(
+                            images[index],
+                            fit: BoxFit.contain, // oran korunuyor
+                          ),
+                        ),
+                        Expanded(
+                          child: Center(
+                            child: IconButton(
+                              onPressed: () {
+                                _pageController?.nextPage(
+                                  duration: Duration(milliseconds: 300),
+                                  curve: Curves.easeInOut,
+                                );
+                              },
+                              icon: Icon(Icons.arrow_forward),
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   ],
                 );
@@ -345,30 +391,62 @@ class _ProjectDetailDialogState extends State<ProjectDetailDialog>
           // Thumbnail 1 kısım kaplıyor
           Expanded(
             flex: 1,
-            child: ListView.builder(
-              scrollDirection: Axis.horizontal,
-              itemCount: images.length,
-              padding: EdgeInsets.symmetric(horizontal: AppConstants.spacingM),
-              itemBuilder: (context, index) {
-                final isSelected = index == _currentImageIndex;
-                return GestureDetector(
-                  onTap: () => _pageController?.jumpToPage(index),
-                  child: Container(
-                    margin: EdgeInsets.only(right: AppConstants.spacingM),
-                    decoration: BoxDecoration(
-                      border: Border.all(
-                        color: isSelected ? Colors.blue : Colors.grey,
-                        width: isSelected ? 2 : 1,
-                      ),
-                      borderRadius: BorderRadius.circular(12),
+            child: Row(
+              children: [
+                IconButton(
+                  onPressed: () {
+                    scrollController.animateTo(
+                      scrollController.position.pixels - 100,
+                      duration: Duration(milliseconds: 300),
+                      curve: Curves.easeInOut,
+                    );
+                  },
+                  icon: Icon(Icons.arrow_back),
+                ),
+                Expanded(
+                  child: ListView.builder(
+                    controller: scrollController,
+                    scrollDirection: Axis.horizontal,
+                    itemCount: images.length,
+                    padding: EdgeInsets.symmetric(
+                      horizontal: AppConstants.spacingM,
                     ),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(12),
-                      child: Image.asset(images[index], fit: BoxFit.cover),
-                    ),
+                    itemBuilder: (context, index) {
+                      final isSelected = index == _currentImageIndex;
+                      return GestureDetector(
+                        onTap: () => _pageController?.jumpToPage(index),
+                        child: Container(
+                          margin: EdgeInsets.only(right: AppConstants.spacingM),
+                          decoration: BoxDecoration(
+                            border: Border.all(
+                              color: isSelected ? Colors.black : Colors.grey,
+                              width: isSelected ? 2 : 1,
+                            ),
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(12),
+                            child: Image.asset(
+                              images[index],
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                        ),
+                      );
+                    },
                   ),
-                );
-              },
+                ),
+                IconButton(
+                  onPressed: () {
+                    scrollController.animateTo(
+                      scrollController.position.pixels + 100,
+                      duration: Duration(milliseconds: 300),
+                      curve: Curves.easeInOut,
+                    );
+                  },
+                  icon: Icon(Icons.arrow_forward),
+                ),
+              ],
             ),
           ),
         ],

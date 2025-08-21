@@ -1,5 +1,7 @@
 import 'dart:ui';
 
+import 'package:flutter/material.dart';
+
 class AppConstants {
   // Theme Colors
   static const Color lightBackground = Color(0xFFFFFFFF);
@@ -20,6 +22,15 @@ class AppConstants {
   static const Color darkTextMuted = Color(0xFF6B7280);
 
   // Spacing
+  static EdgeInsets pagePadding(BuildContext context) {
+    return EdgeInsets.symmetric(
+      horizontal:
+          MediaQuery.sizeOf(context).width > 1500
+              ? ((MediaQuery.sizeOf(context).width - 1500) / 2)
+              : 0,
+    );
+  }
+
   static const double spacingXS = 4.0;
   static const double spacingS = 8.0;
   static const double spacingM = 16.0;

@@ -1,5 +1,5 @@
 import 'package:cv/constants/all.dart';
-import 'package:cv/models/skill_categorty.dart';
+import 'package:cv/constants/cv.dart';
 import 'package:flutter/material.dart';
 
 class SkillsSection extends StatelessWidget {
@@ -9,21 +9,6 @@ class SkillsSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final skillCategories = [
-      SkillCategory(
-        title: "Frontend & Mobile",
-        skills: ["Flutter", "Dart", "React Native", "JavaScript"],
-      ),
-      SkillCategory(
-        title: "Backend & Database",
-        skills: ["Node.js", "Firebase", "MongoDB", "PostgreSQL"],
-      ),
-      SkillCategory(
-        title: "Tools & Others",
-        skills: ["Git", "REST API", "UI/UX Design", "Agile/Scrum"],
-      ),
-    ];
-
     return SingleChildScrollView(
       padding: EdgeInsets.all(AppConstants.containerPadding),
       child: Column(

@@ -1,4 +1,4 @@
-import 'package:cv/constants/constants.dart';
+import 'package:cv/constants/all.dart';
 import 'package:cv/screens/main_page.dart';
 import 'package:flutter/material.dart';
 

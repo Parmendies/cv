@@ -105,7 +105,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
             children: [
               // Desktop/Tablet Sidebar
               if (!isMobile)
-                Container(
+                SizedBox(
                   width: isTablet ? 200 : AppConstants.sidebarWidth,
                   child: _buildSidebar(currentIsDark, isTablet),
                 ),
@@ -353,30 +353,26 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                                               : AppConstants
                                                   .lightTextSecondary),
                                 ),
-                                if (!isTablet) ...[
-                                  SizedBox(width: AppConstants.spacingM),
-                                  Text(
-                                    tab,
-                                    style: TextStyle(
-                                      fontSize: 14,
-                                      fontWeight:
-                                          isSelected
-                                              ? FontWeight.w500
-                                              : FontWeight.w400,
-                                      color:
-                                          isSelected
-                                              ? (currentIsDark
-                                                  ? AppConstants.darkTextPrimary
-                                                  : AppConstants
-                                                      .lightTextPrimary)
-                                              : (currentIsDark
-                                                  ? AppConstants
-                                                      .darkTextSecondary
-                                                  : AppConstants
-                                                      .lightTextSecondary),
-                                    ),
+                                SizedBox(width: AppConstants.spacingM),
+                                Text(
+                                  tab,
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    fontWeight:
+                                        isSelected
+                                            ? FontWeight.w500
+                                            : FontWeight.w400,
+                                    color:
+                                        isSelected
+                                            ? (currentIsDark
+                                                ? AppConstants.darkTextPrimary
+                                                : AppConstants.lightTextPrimary)
+                                            : (currentIsDark
+                                                ? AppConstants.darkTextSecondary
+                                                : AppConstants
+                                                    .lightTextSecondary),
                                   ),
-                                ],
+                                ),
                               ],
                             ),
                           ),

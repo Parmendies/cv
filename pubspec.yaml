@@ -68,6 +68,7 @@ flutter:
     - assets/deste-yonetim/
     - assets/podium/
     - assets/sorusakla/
+    - assets/bulutfix/
     # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images
 

@@ -1,4 +1,5 @@
 import 'package:cv/constants/all.dart';
+import 'package:cv/constants/cv.dart';
 import 'package:cv/models/project.dart';
 import 'package:cv/screens/project_detail_dialog.dart';
 import 'package:flutter/material.dart';
@@ -10,119 +11,33 @@ class ProjectsSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final projects = [
-      //1
-      Project(
-        title: "Wordly",
-        description:
-            "Modern weather application with real-time data and beautiful animations. Features location-based weather, forecasts, and stunning visual effects.",
-        technologies: ["Flutter", 'Firebase', "Google TTF"],
-        coverImage: "assets/wordly/wordly.png",
-        gallery: List.generate(4, (index) => "assets/wordly/${index + 1}.webp"),
-        liveUrl:
-            "https://play.google.com/store/apps/details?id=com.wordly.app.tr",
-      ),
-      //2
-      Project(
-        title: "Blindlook",
-        description:
-            "Modern weather application with real-time data and beautiful animations. Features location-based weather, forecasts, and stunning visual effects.",
-        technologies: ["Flutter", 'Firebase', "Google TTF"],
-        coverImage: "assets/blindlook/blindlook.webp",
-        gallery: List.generate(
-          4,
-          (index) => "assets/blindlook/${index + 1}.webp",
-        ),
-        liveUrl: "https://blindlook.com/",
-      ),
-      //3
-      Project(
-        title: "APTI",
-        description:
-            "Productivity app for task tracking and management with clean interface. Features categories, priorities, deadlines, and team collaboration.",
-        technologies: ["Flutter", "Notifications"],
-        coverImage: "assets/apti/apti.png",
-        gallery: List.generate(4, (index) => "assets/apti/${index + 1}.PNG"),
-        liveUrl:
-            "https://www.yapiradar.com/PazarYeri/Firma/apti-online-site-apartman-ve-plaza-yonetim-teknolojileri-as",
-      ),
-      //4
-      Project(
-        title: "Fallasana",
-        description:
-            "A smart tool that helps prevent and detect copied content using advanced AI algorithms. Available as a web app with real-time analysis.",
-        technologies: ["Flutter Web", "AI", "Machine Learning", "API"],
-        coverImage: "assets/fallasana/fallasana.webp",
-        gallery: List.generate(
-          4,
-          (index) => "assets/fallasana/${index + 1}.png",
-        ),
-        liveUrl: "https://fallasana.com/",
-      ),
-      //5
-      Project(
-        title: "Anında App",
-        description:
-            "Full-featured e-commerce application built with Flutter. Features product catalog, cart, and payment integration with beautiful UI/UX design.",
-        technologies: ["Flutter", "Stripe", "Provider"],
-        coverImage: "assets/aninda/aninda.png",
-        gallery: List.generate(13, (index) => "assets/aninda/${index + 1}.png"),
-      ),
-      //6
-      Project(
-        title: "Deste Yönetim",
-        description:
-            "Full-featured e-commerce application built with Flutter. Features product catalog, cart, and payment integration with beautiful UI/UX design.",
-        technologies: ["Flutter", "Stripe", "Provider"],
-        coverImage: "assets/deste-yonetim/destek_yonteim_hizmetleri.PNG",
-        gallery: List.generate(
-          4,
-          (index) => "assets/deste-yonetim/${index + 1}.PNG",
-        ),
-      ),
-      //7
-      Project(
-        title: "Podium",
-        description:
-            "Full-featured e-commerce application built with Flutter. Features product catalog, cart, and payment integration with beautiful UI/UX design.",
-        technologies: ["Flutter", "Stripe", "Provider"],
-        coverImage: "assets/podium/podium.png",
-        gallery: List.generate(12, (index) => "assets/podium/${index + 1}.png"),
-      ),
-      Project(
-        title: "SoruSakla",
-        description:
-            "Full-featured e-commerce application built with Flutter. Features product catalog, cart, and payment integration with beautiful UI/UX design.",
-        technologies: ["Flutter", "Stripe", "Provider"],
-        coverImage: "assets/sorusakla/sorusakla.png",
-        gallery: List.generate(
-          11,
-          (index) => "assets/sorusakla/ (${index + 1}).png",
-        ),
-      ),
-    ];
-
     final screenWidth = MediaQuery.of(context).size.width;
     final isMobile = screenWidth < 768;
-    final isTablet = screenWidth >= 768 && screenWidth < 1024;
+    final isTablet = screenWidth >= 768 && screenWidth < 1200;
+    final isDesktop = screenWidth >= 1200;
 
     int crossAxisCount;
     double childAspectRatio;
+    double horizontalPadding;
 
     if (isMobile) {
       crossAxisCount = 1;
-      childAspectRatio = 1.5;
+      childAspectRatio = 0.85; // Taller cards for better content visibility
+      horizontalPadding = 16;
     } else if (isTablet) {
       crossAxisCount = 2;
-      childAspectRatio = 1.3;
+      childAspectRatio = 0.8; // Better ratio for tablet
+      horizontalPadding = 24;
     } else {
-      crossAxisCount = 2;
-      childAspectRatio = 1.2;
+      crossAxisCount = 3; // Show 3 columns on desktop for better use of space
+      childAspectRatio = 0.75; // Optimal ratio for desktop
+      horizontalPadding = AppConstants.containerPadding;
     }
 
     return SingleChildScrollView(
-      padding: EdgeInsets.all(
-        isMobile ? AppConstants.spacingL : AppConstants.containerPadding,
+      padding: EdgeInsets.symmetric(
+        horizontal: horizontalPadding,
+        vertical: isMobile ? 16 : AppConstants.containerPadding,
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -130,7 +45,7 @@ class ProjectsSection extends StatelessWidget {
           Text(
             "Projects",
             style: TextStyle(
-              fontSize: isMobile ? 32 : 40,
+              fontSize: isMobile ? 32 : (isTablet ? 36 : 40),
               fontWeight: FontWeight.w300,
               color:
                   isDark
@@ -140,8 +55,7 @@ class ProjectsSection extends StatelessWidget {
             ),
           ),
           SizedBox(
-            height:
-                isMobile ? AppConstants.spacingXXL : AppConstants.spacingXXXL,
+            height: isMobile ? 24 : (isTablet ? 32 : AppConstants.spacingXXXL),
           ),
 
           GridView.builder(
@@ -151,9 +65,9 @@ class ProjectsSection extends StatelessWidget {
               crossAxisCount: crossAxisCount,
               childAspectRatio: childAspectRatio,
               crossAxisSpacing:
-                  isMobile ? AppConstants.spacingL : AppConstants.spacingXL,
+                  isMobile ? 16 : (isTablet ? 20 : AppConstants.spacingXL),
               mainAxisSpacing:
-                  isMobile ? AppConstants.spacingL : AppConstants.spacingXL,
+                  isMobile ? 16 : (isTablet ? 20 : AppConstants.spacingXL),
             ),
             itemCount: projects.length,
             itemBuilder: (context, index) {
@@ -162,6 +76,8 @@ class ProjectsSection extends StatelessWidget {
                 project: project,
                 isDark: isDark,
                 isMobile: isMobile,
+                isTablet: isTablet,
+                isDesktop: isDesktop,
               );
             },
           ),
@@ -175,11 +91,15 @@ class _ProjectCard extends StatefulWidget {
   final Project project;
   final bool isDark;
   final bool isMobile;
+  final bool isTablet;
+  final bool isDesktop;
 
   const _ProjectCard({
     required this.project,
     required this.isDark,
     required this.isMobile,
+    required this.isTablet,
+    required this.isDesktop,
   });
 
   @override
@@ -197,13 +117,13 @@ class _ProjectCardState extends State<_ProjectCard>
   void initState() {
     super.initState();
     _hoverController = AnimationController(
-      duration: Duration(milliseconds: 100),
+      duration: Duration(milliseconds: 200),
       vsync: this,
     );
     _scaleAnimation = Tween<double>(begin: 1.0, end: 1.02).animate(
       CurvedAnimation(parent: _hoverController, curve: Curves.easeInOut),
     );
-    _elevationAnimation = Tween<double>(begin: 0.0, end: 8.0).animate(
+    _elevationAnimation = Tween<double>(begin: 0.0, end: 12.0).animate(
       CurvedAnimation(parent: _hoverController, curve: Curves.easeInOut),
     );
   }
@@ -215,7 +135,7 @@ class _ProjectCardState extends State<_ProjectCard>
   }
 
   void _onHover(bool isHovered) {
-    if (_isHovered != isHovered) {
+    if (_isHovered != isHovered && !widget.isMobile) {
       setState(() {
         _isHovered = isHovered;
       });
@@ -233,10 +153,11 @@ class _ProjectCardState extends State<_ProjectCard>
       animation: _hoverController,
       builder: (context, child) {
         return Transform.scale(
-          scale: _scaleAnimation.value,
+          scale: widget.isMobile ? 1.0 : _scaleAnimation.value,
           child: MouseRegion(
             onEnter: (_) => _onHover(true),
             onExit: (_) => _onHover(false),
+            cursor: SystemMouseCursors.click,
             child: GestureDetector(
               onTap: () {
                 showDialog(
@@ -265,19 +186,23 @@ class _ProjectCardState extends State<_ProjectCard>
                   boxShadow: [
                     BoxShadow(
                       color: (widget.isDark ? Colors.black : Colors.grey)
-                          .withOpacity(0.1),
-                      blurRadius: _elevationAnimation.value,
-                      offset: Offset(0, _elevationAnimation.value / 2),
+                          .withOpacity(widget.isMobile ? 0.05 : 0.1),
+                      blurRadius:
+                          widget.isMobile ? 4 : _elevationAnimation.value,
+                      offset: Offset(
+                        0,
+                        widget.isMobile ? 2 : _elevationAnimation.value / 2,
+                      ),
                     ),
                   ],
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // Cover Image
+                    // Cover Image - Responsive height
                     Expanded(
-                      flex: 3,
-                      child: SizedBox(
+                      flex: widget.isMobile ? 5 : (widget.isTablet ? 4 : 5),
+                      child: Container(
                         width: double.infinity,
                         child: ClipRRect(
                           borderRadius: BorderRadius.only(
@@ -290,126 +215,105 @@ class _ProjectCardState extends State<_ProjectCard>
                                     widget.project.coverImage!,
                                     fit: BoxFit.cover,
                                     width: double.infinity,
+                                    height: double.infinity,
                                     errorBuilder: (context, error, stackTrace) {
-                                      return Container(
-                                        color:
-                                            widget.isDark
-                                                ? AppConstants.darkBorder
-                                                : AppConstants.lightBorder,
-                                        child: Icon(
-                                          Icons.image_not_supported,
-                                          size: 48,
-                                          color:
-                                              widget.isDark
-                                                  ? AppConstants
-                                                      .darkTextSecondary
-                                                  : AppConstants
-                                                      .lightTextSecondary,
-                                        ),
-                                      );
+                                      return _buildPlaceholderImage();
                                     },
                                   )
-                                  : Container(
-                                    color:
-                                        widget.isDark
-                                            ? AppConstants.darkBorder
-                                            : AppConstants.lightBorder,
-                                    child: Icon(
-                                      Icons.code,
-                                      size: 48,
-                                      color:
-                                          widget.isDark
-                                              ? AppConstants.darkTextSecondary
-                                              : AppConstants.lightTextSecondary,
-                                    ),
-                                  ),
+                                  : _buildPlaceholderImage(),
                         ),
                       ),
                     ),
 
-                    // Content
+                    // Content - More space allocated
                     Expanded(
-                      flex: 2,
+                      flex: widget.isMobile ? 6 : (widget.isTablet ? 6 : 5),
                       child: Padding(
                         padding: EdgeInsets.all(
-                          widget.isMobile
-                              ? AppConstants.spacingL
-                              : AppConstants.spacingXL,
+                          widget.isMobile ? 16 : (widget.isTablet ? 18 : 20),
                         ),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisSize: MainAxisSize.min,
                           children: [
                             // Title
                             Text(
                               widget.project.title,
                               style: TextStyle(
-                                fontSize: widget.isMobile ? 16 : 18,
+                                fontSize:
+                                    widget.isMobile
+                                        ? 18
+                                        : (widget.isTablet ? 17 : 18),
                                 fontWeight: FontWeight.w600,
                                 color:
                                     widget.isDark
                                         ? AppConstants.darkTextPrimary
                                         : AppConstants.lightTextPrimary,
+                                height: 1.2,
                               ),
-                              maxLines: 1,
+                              maxLines: 2,
                               overflow: TextOverflow.ellipsis,
                             ),
-                            SizedBox(height: AppConstants.spacingM),
+                            SizedBox(height: widget.isMobile ? 8 : 10),
 
-                            // Description
+                            // Description - More space and better sizing
                             Expanded(
+                              flex: 3,
                               child: Text(
                                 widget.project.description,
                                 style: TextStyle(
-                                  fontSize: widget.isMobile ? 12 : 14,
+                                  fontSize:
+                                      widget.isMobile
+                                          ? 14
+                                          : (widget.isTablet ? 13 : 14),
                                   height: 1.4,
                                   color:
                                       widget.isDark
                                           ? AppConstants.darkTextSecondary
                                           : AppConstants.lightTextSecondary,
                                 ),
-                                maxLines: widget.isMobile ? 2 : 3,
+                                maxLines:
+                                    widget.isMobile
+                                        ? 4
+                                        : (widget.isTablet ? 3 : 4),
                                 overflow: TextOverflow.ellipsis,
                               ),
                             ),
-                            SizedBox(height: AppConstants.spacingM),
+                            SizedBox(height: widget.isMobile ? 12 : 10),
 
-                            // Technologies
-                            Wrap(
-                              spacing: AppConstants.spacingS,
-                              runSpacing: AppConstants.spacingXS,
-                              children:
-                                  widget.project.technologies
-                                      .take(widget.isMobile ? 2 : 3)
-                                      .map(
-                                        (tech) => Container(
-                                          padding: EdgeInsets.symmetric(
-                                            horizontal: AppConstants.spacingS,
-                                            vertical: AppConstants.spacingXS,
-                                          ),
-                                          decoration: BoxDecoration(
-                                            color:
-                                                widget.isDark
-                                                    ? AppConstants.darkBorder
-                                                    : AppConstants.lightBorder,
-                                            borderRadius: BorderRadius.circular(
-                                              AppConstants.borderRadius,
-                                            ),
-                                          ),
-                                          child: Text(
-                                            tech,
-                                            style: TextStyle(
-                                              fontSize: 10,
-                                              color:
-                                                  widget.isDark
-                                                      ? AppConstants
-                                                          .darkTextSecondary
-                                                      : AppConstants
-                                                          .lightTextSecondary,
-                                            ),
-                                          ),
+                            // Technologies - Better responsive handling
+                            Flexible(
+                              flex: 2,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Wrap(
+                                    spacing: widget.isMobile ? 6 : 8,
+                                    runSpacing: widget.isMobile ? 4 : 6,
+                                    children:
+                                        widget.project.technologies
+                                            .take(_getTechCount())
+                                            .map((tech) => _buildTechChip(tech))
+                                            .toList(),
+                                  ),
+                                  if (widget.project.technologies.length >
+                                      _getTechCount())
+                                    Padding(
+                                      padding: const EdgeInsets.only(top: 6),
+                                      child: Text(
+                                        '+${widget.project.technologies.length - _getTechCount()} more',
+                                        style: TextStyle(
+                                          fontSize: widget.isMobile ? 10 : 11,
+                                          color:
+                                              widget.isDark
+                                                  ? AppConstants.darkTextMuted
+                                                  : AppConstants.lightTextMuted,
+                                          fontStyle: FontStyle.italic,
                                         ),
-                                      )
-                                      .toList(),
+                                      ),
+                                    ),
+                                ],
+                              ),
                             ),
                           ],
                         ),
@@ -423,5 +327,74 @@ class _ProjectCardState extends State<_ProjectCard>
         );
       },
     );
+  }
+
+  Widget _buildPlaceholderImage() {
+    return Container(
+      width: double.infinity,
+      height: double.infinity,
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors:
+              widget.isDark
+                  ? [AppConstants.darkBorder, AppConstants.darkSurface]
+                  : [AppConstants.lightBorder, AppConstants.lightSurface],
+        ),
+      ),
+      child: Icon(
+        widget.project.coverImage != null
+            ? Icons.image_not_supported
+            : Icons.code,
+        size: widget.isMobile ? 32 : 40,
+        color:
+            widget.isDark
+                ? AppConstants.darkTextSecondary
+                : AppConstants.lightTextSecondary,
+      ),
+    );
+  }
+
+  Widget _buildTechChip(String tech) {
+    return Container(
+      padding: EdgeInsets.symmetric(
+        horizontal: widget.isMobile ? 8 : 10,
+        vertical: widget.isMobile ? 4 : 5,
+      ),
+      decoration: BoxDecoration(
+        color:
+            widget.isDark
+                ? AppConstants.darkBorder.withOpacity(0.7)
+                : AppConstants.lightBorder.withOpacity(0.7),
+        borderRadius: BorderRadius.circular(
+          widget.isMobile ? 12 : AppConstants.borderRadius,
+        ),
+        border:
+            widget.isDark
+                ? null
+                : Border.all(
+                  color: AppConstants.lightBorder.withOpacity(0.3),
+                  width: 0.5,
+                ),
+      ),
+      child: Text(
+        tech,
+        style: TextStyle(
+          fontSize: widget.isMobile ? 11 : (widget.isTablet ? 10 : 11),
+          fontWeight: FontWeight.w500,
+          color:
+              widget.isDark
+                  ? AppConstants.darkTextSecondary
+                  : AppConstants.lightTextSecondary,
+        ),
+      ),
+    );
+  }
+
+  int _getTechCount() {
+    if (widget.isMobile) return 3;
+    if (widget.isTablet) return 3;
+    return 4; // Desktop
   }
 }
